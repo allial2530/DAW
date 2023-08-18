@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { Box, Container, Typography, TextField, Button } from '@mui/material';
+import { Box, Container, Typography, TextField, Button, Alert } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useIdentity } from '../providers/IdentityProvider';
-import { BorderAll, BorderStyle } from '@mui/icons-material';
 
 function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { updateIdentity } = useIdentity();
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,44 +18,49 @@ function SignIn() {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-            updateIdentity(user); // Update the identity with the signed-in user
-            navigate('/'); // Navigate to the root path
+            updateIdentity(user);
+            navigate('/');
         } catch (error) {
-            console.error('Error signing in with email and password', error);
+            setErrorMessage('Error signing in with email and password');
         }
     };
+
+    const handlePasswordChange = (e) => {
+        const newPassword = e.target.value;
+        
+        if (newPassword.length < 8) {
+            setErrorMessage('La contraseña debe tener 8 o más caracteres');
+        } else {
+            setErrorMessage(null);
+        }
+
+        setPassword(newPassword);
+    };
+
     const styles = {
         bgiSignIn: {
           backgroundImage: `url(${process.env.PUBLIC_URL}/imagenes/logologin.JPG)`
         }
-      };
+    };
 
-      return (
-        <Container 
-        maxWidth="lg"
-       
-        >
+    return (
+        <Container maxWidth="lg">
             <Box
-            display="flex"
-            flexDirection ='row'
-            justifyContent= 'space-evenly'
-            maxWidth = {true}
-           
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-evenly"
+                maxWidth={true}
             >
                 <Box 
-                    height= '50vh'
-                    width= '100%'
-                    maxWidth= {true}
-                     m={0.5}
-                     >
-                    
-                    <img src= "/imagenes/logologin.JPG"
-                    alt="Logo"
-                    />
-
+                    height="50vh"
+                    width="100%"
+                    maxWidth={true}
+                    m={0.5}
+                >
+                    <img src="/imagenes/logologin.JPG" alt="Logo" />
                 </Box>
                 <Box 
-                  maxWidth = {true}
+                    maxWidth={true}
                     display="flex"
                     flexDirection="column"
                     justifyContent="center"
@@ -63,10 +68,10 @@ function SignIn() {
                     bgcolor="black"
                     p={2}
                     boxShadow={1}
-                    height= '50vh'
-                    width='100%' 
+                    height="50vh"
+                    width="100%"
                     ml={5}
-                    mt={15}                 
+                    mt={15}
                 >
                     <Typography variant="h4" component="h1" gutterBottom>
                         Iniciar sesión
@@ -86,7 +91,7 @@ function SignIn() {
                         fullWidth
                         type="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handlePasswordChange} // Use the new handler
                     />
                     <Box mt={2}>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>
@@ -96,12 +101,13 @@ function SignIn() {
                     <Typography variant="body1" align="center">
                         ¿No tienes una cuenta? <Link to="/signup">Registrarse</Link>
                     </Typography>
+                    {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
                 </Box>
             </Box>
         </Container>
-        //</div>
     );
-        
 }
 
 export default SignIn;
+
+
