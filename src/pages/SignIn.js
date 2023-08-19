@@ -21,13 +21,13 @@ function SignIn() {
             updateIdentity(user);
             navigate('/');
         } catch (error) {
-            setErrorMessage('Error signing in with email and password');
+            setErrorMessage('Hubo un error iniciando sesión');
         }
     };
 
     const handlePasswordChange = (e) => {
         const newPassword = e.target.value;
-        
+
         if (newPassword.length < 8) {
             setErrorMessage('La contraseña debe tener 8 o más caracteres');
         } else {
@@ -39,7 +39,7 @@ function SignIn() {
 
     const styles = {
         bgiSignIn: {
-          backgroundImage: `url(${process.env.PUBLIC_URL}/imagenes/logologin.JPG)`
+            backgroundImage: `url(${process.env.PUBLIC_URL}/imagenes/logologin.JPG)`
         }
     };
 
@@ -51,7 +51,7 @@ function SignIn() {
                 justifyContent="space-evenly"
                 maxWidth={true}
             >
-                <Box 
+                <Box
                     height="50vh"
                     width="100%"
                     maxWidth={true}
@@ -59,7 +59,7 @@ function SignIn() {
                 >
                     <img src="/imagenes/logologin.JPG" alt="Logo" />
                 </Box>
-                <Box 
+                <Box
                     maxWidth={true}
                     display="flex"
                     flexDirection="column"
